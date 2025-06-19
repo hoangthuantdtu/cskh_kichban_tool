@@ -1,13 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     // === CÁC BIẾN TOÀN CỤC (GLOBAL VARIABLES) ===
-    let allData = []; // Store all loaded dataa
+    let allData = []; // Store all loaded data
     let currentFilteredData = []; // Store data after all filters
-    let currentCategory = 'Tất cả'; 
+    let currentCategory = 'Tất cả'; // Default category
 
     // === THAY THẾ BẰNG URL WEB APP CỦA BẠN ===
     // Đảm bảo URL này là URL thực tế từ việc triển khai Google Apps Script Web App của bạn
-    // Ví dụ: const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw79wBYg9mgen-yvXmHq-dwAYwOElN7Agb9vHo9me4uOPidyaWnbLqmVzTd1T-rLEz8Xg/exec';
-    const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw79wBYg9mgen-yvXmHq-dwAYwOElN7Agb9vHo9me4uOPidyaWnbLqmVzTd1T-rLEz8Xg/exec'; // VUI LÒNG DÁN URL CỦA BẠN VÀO ĐÂY
+    const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw79wBYg9mgen-yvXmHq-dwAYwOElN7Agb9vHo9me4uOPidyaWnbLqmVzTd1T-rLEz8Xg/exec';
     // ======================================
 
     const SHEET_NAME_DISPLAY = 'mau_du_lieu_cskh'; // Tên hiển thị của Google Sheet
@@ -22,29 +21,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const googleSignInBtn = document.getElementById('googleSignInBtn'); // Nút Đăng nhập Google
 
     const generalSearchInput = document.getElementById('generalSearchInput');
-    const clearGeneralSearchBtn = document.getElementById('clearGeneralSearch'); // Đã sửa tên biến
+    const clearGeneralSearchBtn = document.getElementById('clearGeneralSearch');
     const countryFilterSelect = document.getElementById('countryFilter');
     const categoryTabsContainer = document.getElementById('categoryTabs');
 
     const caseNameSearchInput = document.getElementById('caseNameSearch');
-    const clearCaseNameSearchBtn = document.getElementById('clearCaseNameSearch'); // Đã sửa tên biến
+    const clearCaseNameSearchBtn = document.getElementById('clearCaseNameSearch');
     const vietnameseContentSearchInput = document.getElementById('vietnameseContentSearch');
-    const clearVietnameseContentSearchBtn = document.getElementById('clearVietnameseContentSearch'); // Đã sửa tên biến
+    const clearVietnameseContentSearchBtn = document.getElementById('clearVietnameseContentSearch');
     const keywordsSearchInput = document.getElementById('keywordsSearch');
-    const clearKeywordsSearchBtn = document.getElementById('clearKeywordsSearch'); // Đã sửa tên biến
+    const clearKeywordsSearchBtn = document.getElementById('clearKeywordsSearch');
     const noteSearchInput = document.getElementById('noteSearch');
-    const clearNoteSearchBtn = document.getElementById('clearNoteSearch'); // Đã sửa tên biến
+    const clearNoteSearchBtn = document.getElementById('clearNoteSearch');
 
     const customerInfoSearchInput = document.getElementById('customerInfoSearchInput');
-    const clearCustomerInfoSearchBtn = document.getElementById('clearCustomerInfoSearch'); // Đã sửa tên biến
+    const clearCustomerInfoSearchBtn = document.getElementById('clearCustomerInfoSearch');
     const customerInfoCheckboxes = document.querySelectorAll('.filter-group input[type="checkbox"]');
 
     const resultsDisplay = document.getElementById('resultsDisplay');
-    const caseCountDisplay = document.getElementById('caseCountDisplay'); // Đảm bảo phần tử này có trong HTML
-    const caseTotalDisplay = document.getElementById('caseTotalDisplay'); // Đảm bảo phần tử này có trong HTML
+    const caseCountDisplay = document.getElementById('caseCountDisplay'); // Make sure this element exists in your HTML
+    const caseTotalDisplay = document.getElementById('caseTotalDisplay'); // Make sure this element exists in your HTML
 
     const advancedUploadToggle = document.getElementById('advancedUploadToggle');
-    const advancedUploadContent = document.querySelector('.accordion-content'); // Lấy nội dung thực tế
+    const advancedUploadContent = document.querySelector('.accordion-content'); // Get the actual content div
     const advancedFilterToggle = document.getElementById('advancedFilterToggle');
     const advancedFilterContent = document.getElementById('advancedFilterContent');
 
@@ -245,13 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render results to the display area
     function renderResults() {
         resultsDisplay.innerHTML = ''; // Clear previous results
-        // Kiểm tra sự tồn tại của các phần tử trước khi truy cập
-        if (caseCountDisplay) {
-            caseCountDisplay.textContent = currentFilteredData.length;
-        }
-        if (caseTotalDisplay) {
-            caseTotalDisplay.textContent = allData.length;
-        }
+        caseCountDisplay.textContent = currentFilteredData.length;
+        caseTotalDisplay.textContent = allData.length;
+
 
         if (currentFilteredData.length === 0) {
             resultsDisplay.innerHTML = '<p class="no-results-message">Không tìm thấy kết quả nào phù hợp.</p>';
@@ -334,18 +329,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function addCopyEventListeners() {
         document.querySelectorAll('.btn-copy').forEach(button => {
             button.addEventListener('click', (e) => {
-                // Lấy textarea tương ứng thông qua cấu trúc DOM
-                const textarea = e.target.closest('.content-item').querySelector('textarea');
-                if (textarea) {
-                    textarea.select();
-                    document.execCommand('copy');
-                    // Optional: Provide feedback to the user
-                    const originalText = button.textContent;
-                    button.textContent = 'Đã sao chép!';
-                    setTimeout(() => {
-                        button.textContent = originalText;
-                    }, 1500);
-                }
+                const target = e.target.dataset.target;
+                const textarea = e.target.previousElementSibling;
+                textarea.select();
+                document.execCommand('copy');
+                // Optional: Provide feedback to the user
+                const originalText = button.textContent;
+                button.textContent = 'Đã sao chép!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1500);
             });
         });
     }
@@ -355,8 +348,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.btn-copy-all').forEach(button => {
             button.addEventListener('click', (e) => {
                 const card = e.target.closest('.case-card');
-                const vietnameseContent = card.querySelector('.content-item textarea[data-target="vietnameseContent"]') ? card.querySelector('.content-item textarea[data-target="vietnameseContent"]').value : '';
-                const nationalContent = card.querySelector('.content-item textarea[data-target="nationalContent"]') ? card.querySelector('.content-item textarea[data-target="nationalContent"]').value : '';
+                const vietnameseContent = card.querySelector('textarea[data-target="vietnameseContent"]') ? card.querySelector('textarea[data-target="vietnameseContent"]').value : '';
+                const nationalContent = card.querySelector('textarea[data-target="nationalContent"]') ? card.querySelector('textarea[data-target="nationalContent"]').value : '';
                 const huongXuLy = card.querySelector('.row-details p:nth-child(1)') ? card.querySelector('.row-details p:nth-child(1)').textContent.replace('Hướng xử lý:', '').trim() : '';
                 const duLieuDauVao = card.querySelector('.row-details p:nth-child(2)') ? card.querySelector('.row-details p:nth-child(2)').textContent.replace('Dữ liệu đầu vào:', '').trim() : '';
                 const keywords = card.querySelector('.row-details p:nth-child(3)') ? card.querySelector('.row-details p:nth-child(3)').textContent.replace('Keywords:', '').trim() : '';
@@ -406,6 +399,9 @@ ${lienHeNoiBoLink ? `Liên hệ nội bộ (Link): ${lienHeNoiBoLink}` : ''}
         resultsDisplay.innerHTML = '<p class="no-results-message">Đang tải dữ liệu, vui lòng chờ...</p>';
 
         try {
+            // Logic: Mặc định tải file cục bộ. Nếu người dùng muốn dùng Google Sheet, họ nhấn nút.
+            // Sau khi nhấn nút và xác thực/tải thành công, trạng thái sẽ thay đổi.
+
             // Tải file cục bộ mặc định
             const defaultFilePath = './read_file/mau_du_lieu_cskh.xlsx';
             const data = await loadFileFromPath(defaultFilePath);
@@ -440,12 +436,11 @@ ${lienHeNoiBoLink ? `Liên hệ nội bộ (Link): ${lienHeNoiBoLink}` : ''}
         try {
             const response = await fetch(APPS_SCRIPT_WEB_APP_URL);
             if (!response.ok) {
-                // Lưu ý: Apps Script thường trả về 200 OK ngay cả khi có lỗi bên trong.
-                // Lỗi HTTP status thường chỉ xảy ra khi URL sai hoàn toàn hoặc mạng có vấn đề.
-                // Lỗi CORS sẽ hiển thị trong console (như bạn thấy) chứ không làm response.ok là false.
-                throw new Error(`HTTP Status: ${response.status}. Có thể không tiếp cận được Google Apps Script.`);
+                // Apps Script trả về 200 OK ngay cả khi có lỗi bên trong.
+                // Chúng ta cần kiểm tra nội dung JSON để xem có lỗi thực sự không.
+                throw new Error(`HTTP Status: ${response.status}. Could not reach Google Apps Script.`);
             }
-            const data = await response.json(); // Phải luôn cố gắng đọc JSON
+            const data = await response.json();
 
             if (data.error) {
                 // Apps Script đã trả về lỗi trong JSON body
@@ -472,15 +467,7 @@ ${lienHeNoiBoLink ? `Liên hệ nội bộ (Link): ${lienHeNoiBoLink}` : ''}
             updateUiForAuthStatus(); // Cập nhật giao diện người dùng
         } catch (error) {
             console.error('Error fetching data from Google Apps Script:', error);
-            // Kiểm tra cụ thể lỗi CORS
-            if (error instanceof TypeError && error.message === 'Failed to fetch') {
-                alert('Kết nối đến Google Sheet bị chặn bởi CORS policy. Vui lòng cấp quyền cho ứng dụng bằng cách TẮT TẤT CẢ EXTENSION TRÌNH DUYỆT (đặc biệt là VPN) và truy cập trực tiếp URL Web App MỘT LẦN để cấp quyền:\n\n' + APPS_SCRIPT_WEB_APP_URL);
-            } else if (error.name === 'AbortError') {
-                // Xử lý khi yêu cầu bị hủy (ví dụ: người dùng đóng tab)
-                console.warn('Fetch request was aborted.');
-            } else {
-                alert('Lỗi khi kết nối đến Google Sheet. Vui lòng kiểm tra console hoặc thử lại. Có thể bạn cần cấp quyền cho ứng dụng bằng cách truy cập trực tiếp URL Web App một lần.');
-            }
+            alert('Lỗi khi kết nối đến Google Sheet. Vui lòng kiểm tra console hoặc thử lại. Có thể bạn cần cấp quyền cho ứng dụng bằng cách truy cập trực tiếp URL Web App một lần.');
             resultsDisplay.innerHTML = '<p class="no-results-message">Lỗi khi kết nối Google Sheet. </p>';
             fileNameDisplay.textContent = 'Lỗi kết nối Google Sheet.';
             isAuthenticatedWithGoogle = false; // Đánh dấu là chưa xác thực
@@ -495,19 +482,13 @@ ${lienHeNoiBoLink ? `Liên hệ nội bộ (Link): ${lienHeNoiBoLink}` : ''}
             googleSignInBtn.disabled = true; // Vô hiệu hóa nút sau khi đăng nhập thành công
             refreshDataBtn.textContent = '🔄 Refresh Dữ liệu Google Sheet';
             loadFromFileSystemBtn.style.display = 'none'; // Ẩn nút tải file cục bộ
-            // Kiểm tra sự tồn tại của advancedUploadToggle trước khi truy cập .closest
-            if (advancedUploadToggle) {
-                advancedUploadToggle.closest('.accordion').style.display = 'none'; // Ẩn phần tải lên file trực tiếp
-            }
+            advancedUploadToggle.closest('.accordion').style.display = 'none'; // Ẩn phần tải lên file trực tiếp
         } else {
             googleSignInBtn.textContent = '🚀 Đăng nhập với Google Sheet';
             googleSignInBtn.disabled = false;
             refreshDataBtn.textContent = '🔄 Refresh Dữ liệu cục bộ';
             loadFromFileSystemBtn.style.display = 'inline-flex';
-            // Kiểm tra sự tồn tại của advancedUploadToggle trước khi truy cập .closest
-            if (advancedUploadToggle) {
-                advancedUploadToggle.closest('.accordion').style.display = 'block'; // Hiển thị lại phần tải lên file trực tiếp
-            }
+            advancedUploadToggle.closest('.accordion').style.display = 'block'; // Hiển thị lại phần tải lên file trực tiếp
         }
     }
 
@@ -543,6 +524,9 @@ ${lienHeNoiBoLink ? `Liên hệ nội bộ (Link): ${lienHeNoiBoLink}` : ''}
 
     // Google Sign-In Button
     googleSignInBtn.addEventListener('click', () => {
+        // Gọi hàm để tải dữ liệu từ Google Sheet.
+        // Nếu đây là lần đầu và chưa cấp quyền, fetch sẽ lỗi,
+        // và hàm sẽ hiển thị alert hướng dẫn người dùng truy cập trực tiếp URL Apps Script.
         loadDataFromGoogleSheet();
     });
 
@@ -569,33 +553,27 @@ ${lienHeNoiBoLink ? `Liên hệ nội bộ (Link): ${lienHeNoiBoLink}` : ''}
     });
 
 
-    // Clear Buttons (Đã sửa lại đúng tên biến)
-    if (clearGeneralSearchBtn) clearGeneralSearchBtn.addEventListener('click', () => { generalSearchInput.value = ''; applyFilters(); });
-    if (clearCaseNameSearchBtn) clearCaseNameSearchBtn.addEventListener('click', () => { caseNameSearchInput.value = ''; applyFilters(); });
-    if (clearVietnameseContentSearchBtn) clearVietnameseContentSearchBtn.addEventListener('click', () => { vietnameseContentSearchInput.value = ''; applyFilters(); });
-    if (clearKeywordsSearchBtn) clearKeywordsSearchBtn.addEventListener('click', () => { keywordsSearchInput.value = ''; applyFilters(); });
-    if (clearNoteSearchBtn) clearNoteSearchBtn.addEventListener('click', () => { noteSearchInput.value = ''; applyFilters(); });
-    if (clearCustomerInfoSearchBtn) clearCustomerInfoSearchBtn.addEventListener('click', () => { customerInfoSearchInput.value = ''; applyFilters(); });
+    // Clear Buttons
+    clearGeneralSearchBtn.addEventListener('click', () => { generalSearchInput.value = ''; applyFilters(); });
+    clearCaseNameSearchBtn.addEventListener('click', () => { caseNameSearchInput.value = ''; applyFilters(); });
+    clearVietnameseContentSearchBtn.addEventListener('click', () => { vietnameseContentSearchInput.value = ''; applyFilters(); });
+    clearKeywordsSearchBtn.addEventListener('click', () => { keywordsSearchInput.value = ''; applyFilters(); });
+    clearNoteSearchBtn.addEventListener('click', () => { noteSearchInput.value = ''; applyFilters(); });
+    clearCustomerInfoSearchBtn.addEventListener('click', () => { customerInfoSearchInput.value = ''; applyFilters(); });
 
 
     // Accordion Toggles
-    if (advancedUploadToggle) { // Thêm kiểm tra null
-        advancedUploadToggle.addEventListener('click', () => {
-            if (advancedUploadContent) { // Kiểm tra null cho nội dung
-                advancedUploadContent.classList.toggle('show');
-            }
-            advancedUploadToggle.classList.toggle('active');
-        });
-    }
+    advancedUploadToggle.addEventListener('click', () => {
+        // Toggle the 'show' class for the content
+        advancedUploadContent.classList.toggle('show');
+        // Toggle 'active' class for the header to rotate icon
+        advancedUploadToggle.classList.toggle('active');
+    });
 
-    if (advancedFilterToggle) { // Thêm kiểm tra null
-        advancedFilterToggle.addEventListener('click', () => {
-            if (advancedFilterContent) { // Kiểm tra null cho nội dung
-                advancedFilterContent.classList.toggle('show');
-            }
-            advancedFilterToggle.classList.toggle('active');
-        });
-    }
+    advancedFilterToggle.addEventListener('click', () => {
+        advancedFilterContent.classList.toggle('show');
+        advancedFilterToggle.classList.toggle('active');
+    });
 
     // Initial load when DOM is ready
     loadInitialData();
