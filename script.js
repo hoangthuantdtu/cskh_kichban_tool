@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // === THAY THẾ BẰNG URL WEB APP CỦA BẠN ===
     // Đảm bảo URL này là URL thực tế từ việc triển khai Google Apps Script Web App của bạn
     // Ví dụ: const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw79wBYg9mgen-yvXmHq-dwAYwOElN7Agb9vHo9me4uOPidyaWnbLqmVzTd1T-rLEz8Xg/exec';
-    const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw79wBYg9mgen-yvXmHq-dwAYwOElN7Agb9vHo9me4uOPidyaWnbLqmVzTd1T-rLEz8Xg/exec'; // VUI LÒNG DÁN URL CỦA BẠN VÀO ĐÂY
+    const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx7D4uJuONbLnj8enNLcjSEFEBCWwXe8aepf9pXO8PCVG8zAWjkA13w_mk7MezZh8o/exec'; // VUI LÒNG DÁN URL CỦA BẠN VÀO ĐÂY
     // ======================================
 
     const SHEET_NAME_DISPLAY = 'mau_du_lieu_cskh'; // Tên hiển thị của Google Sheet
